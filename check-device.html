@@ -1,1 +1,48 @@
-<h1>Hello, world!</h1>
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <title>Qurilma Ma'lumotlari</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/1.0.2/ua-parser.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+    h1 { color: #333; }
+    .info { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+    .info p { margin: 8px 0; }
+  </style>
+</head>
+<body>
+  <h1>Qurilma Ma'lumotlari</h1>
+  <div class="info" id="device-info">
+    Ma'lumotlar yuklanmoqda...
+  </div>
+
+  <script>
+    async function getDeviceInfo() {
+      const parser = new UAParser();
+      const result = parser.getResult();
+
+      let ipInfo = {};
+      try {
+        const res = await fetch('https://ipinfo.io/json?token=6ba57a0c7d446a'); // Bu yerda 'demo' token ishlatilgan, keyin almashtirish kerak
+        ipInfo = await res.json();
+      } catch (e) {
+        ipInfo.ip = "IP olishda xatolik";
+      }
+
+      const html = `
+        <p><strong>Qurilma turi:</strong> ${result.device.type || "Noma'lum"}</p>
+        <p><strong>OS (tizim):</strong> ${result.os.name} ${result.os.version}</p>
+        <p><strong>Brauzer:</strong> ${result.browser.name} ${result.browser.version}</p>
+        <p><strong>IP manzil:</strong> ${ipInfo.ip || 'Nomaʼlum'}</p>
+        <p><strong>Joylashuv (taxminiy):</strong> ${ipInfo.city || ''}, ${ipInfo.country || ''}</p>
+        <p><strong>Ekran o'lchami:</strong> ${screen.width}x${screen.height}</p>
+      `;
+      document.getElementById("device-info").innerHTML = html;
+    }
+
+    getDeviceInfo();
+  </script>
+</body>
+</html>
+
